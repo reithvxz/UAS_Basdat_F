@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('surats', function (Blueprint $table) {
+            $table->id('surat_id');
+            $table->foreignId('mhs_id')->constrained('mahasiswas', 'mhs_id');
+            $table->foreignId('jenis_surat_id')->constrained('jenis_surats', 'jenis_id');
+
+            // --- PERUBAHAN DIMULAI DI SINI ---
+            $table->string('nama_pengaju');                     // BARU: Kolom untuk nama pengaju
+            $table->string('atas_nama');
+            $table->foreignId('ormawa_id')->nullable()->constrained('ormawas', 'ormawa_id');
+            $table->enum('tipe_surat', ['Scan', 'Fisik']);       // BARU: Kolom untuk tipe surat (Scan/Fisik)
+            $table->string('perihal');
+            // $table->text('deskripsi');                       // DIHAPUS: Kolom deskripsi
+            $table->string('status');
+            // --- PERUBAHAN SELESAI ---
+
+            $table->timestamps(); // Ini akan otomatis mencatat tanggal & jam upload di kolom `created_at`
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('surats');
+    }
+};

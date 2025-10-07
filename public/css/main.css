@@ -1,0 +1,822 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0d0c3b, #1a1859, #2a2970);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* INTRO & LANDING (dari landingpage.html) */
+.intro {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 20;
+    background: inherit;
+    transition: opacity .8s ease, transform .8s ease;
+    overflow: hidden;
+}
+
+.intro .bg-shape {
+    position: absolute;
+    opacity: .08;
+    animation: float 12s infinite ease-in-out;
+    z-index: 1;
+}
+
+.intro .circle { border-radius: 50%; background: #ffce00; }
+.intro .square { background: #fff; }
+.intro .triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 50px solid #ffce00;
+}
+
+.envelope {
+    position: relative;
+    width: 400px;
+    height: 250px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+    cursor: pointer;
+    transition: transform .4s ease, box-shadow .4s ease;
+    z-index: 5;
+}
+
+.envelope:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 50px rgba(255, 206, 0, .5);
+}
+
+.envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 200px solid transparent;
+    border-right: 200px solid transparent;
+    border-top: 125px solid #ffce00;
+    transition: transform .6s ease;
+    transform-origin: top;
+}
+
+.intro h1 {
+    margin-top: 25px;
+    font-size: 46px;
+    font-weight: 900;
+    color: #ffce00;
+    text-align: center;
+    z-index: 5;
+}
+
+.open .envelope::before { transform: rotateX(180deg); }
+.bye { opacity: 0; pointer-events: none; transform: scale(1.2); }
+
+.loading-ring {
+    border: 4px solid rgba(255, 255, 255, .2);
+    border-top: 4px solid #ffce00;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    margin-top: 20px;
+    animation: spin 1s linear infinite;
+    display: none;
+    z-index: 5;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.landing {
+    position: relative;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+    z-index: 10;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.show-landing .landing { opacity: 1; pointer-events: auto; }
+
+/* NAVBAR & FOOTER (Umum untuk semua halaman) */
+nav {
+    width: 100%;
+    padding: 18px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+    z-index: 10;
+}
+
+nav .logo { font-size: 22px; font-weight: 800; color: #ffce00; }
+nav ul { display: flex; gap: 25px; list-style: none; }
+nav ul li a { color: #fff; text-decoration: none; transition: .3s; }
+nav ul li a:hover { color: #ffce00; }
+
+footer {
+    background: rgba(13, 12, 59, .75);
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #bbb;
+    font-size: 15px;
+    backdrop-filter: blur(6px);
+    z-index: 5;
+}
+
+footer .links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 10px;
+}
+
+footer a { color: #ffce00; text-decoration: none; transition: .3s; }
+footer a:hover { text-decoration: underline; }
+
+/* Floating shapes (Umum) */
+.shape {
+    position: absolute;
+    opacity: .07;
+    animation: float 12s infinite ease-in-out;
+    z-index: 0;
+}
+
+.circle { border-radius: 50%; background: #ffce00; }
+.square { background: #fff; }
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 50px solid #ffce00;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-40px); }
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ffce00;
+    border-radius: 50%;
+    opacity: .6;
+    animation: particleFloat 8s linear infinite;
+    z-index: 1;
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(-800px); opacity: 0; }
+}
+
+/* HERO (dari landingpage.html) */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+    max-width: 1100px;
+    width: 90%;
+    margin: auto;
+    position: relative;
+    z-index: 5;
+}
+
+.text { flex: 1; }
+.text .title {
+    font-size: 68px;
+    font-weight: 900;
+    color: #ffce00;
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+.text .fullname {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffce00;
+    margin-bottom: 20px;
+}
+
+.text .subtitle {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #eee;
+    margin-bottom: 40px;
+    max-width: 520px;
+}
+
+.btn-login {
+    background: linear-gradient(45deg, #ffce00, #ffd633);
+    color: #0d0c3b;
+    padding: 14px 40px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 6px 20px rgba(255, 206, 0, .5);
+    transition: .3s ease;
+}
+
+.btn-login:hover { transform: translateY(-4px) scale(1.05); }
+
+.illustration {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.big-envelope {
+    width: 300px;
+    height: 200px;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .25);
+}
+
+.big-envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 150px solid transparent;
+    border-right: 150px solid transparent;
+    border-top: 100px solid #ffce00;
+}
+
+/* FEATURES (dari landingpage.html) */
+.features {
+    padding: 80px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    text-align: center;
+    position: relative;
+    z-index: 5;
+}
+
+.features h2 { color: #ffce00; font-size: 32px; margin-bottom: 40px; }
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.feature {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+    transition: .3s;
+}
+
+.feature:hover { transform: translateY(-10px); }
+.feature h3 { margin-bottom: 15px; color: #fff; font-size: 20px; }
+.feature p { color: #ddd; font-size: 16px; }
+
+/* DASHBOARD (dari dash.html) */
+nav .logout {
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border: 2px solid #ffce00;
+    border-radius: 30px;
+    transition: .3s ease;
+}
+
+nav .logout:hover { background: #ffce00; color: #0d0c3b; }
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 20px;
+}
+
+.title { font-size: 56px; font-weight: 900; color: #ffce00; margin-bottom: 12px; }
+.subtitle { font-size: 24px; color: #ffce00; margin-bottom: 8px; }
+.welcome { font-size: 18px; color: #ddd; margin-bottom: 60px; }
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 50px 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    transition: .4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(40px);
+    opacity: 0;
+    animation: fadeUp .8s forwards;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:nth-child(1) { animation-delay: .2s; }
+.card:nth-child(2) { animation-delay: .4s; }
+.card:nth-child(3) { animation-delay: .6s; }
+
+@keyframes fadeUp { to { transform: translateY(0); opacity: 1; } }
+
+.card:hover { transform: translateY(-15px); background: rgba(255, 255, 255, 0.18); }
+.card-icon { font-size: 52px; margin-bottom: 25px; color: #ffce00; }
+.card h3 { font-size: 22px; margin-bottom: 12px; color: #fff; }
+.card p { color: #ccc; font-size: 15px; }
+
+/* KONTEN HALAMAN DALAM (dari template.html, status.html, dll) */
+h1 {
+    text-align: center;
+    margin: 80px 0 30px;
+    color: #ffce00;
+    font-size: 42px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeIn 0.8s ease forwards;
+}
+
+th, td { padding: 12px 15px; text-align: center; }
+th { background: rgba(255, 255, 255, 0.2); font-weight: 700; }
+tr:nth-child(even) { background: rgba(255, 255, 255, 0.05); }
+
+a.template-link {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #ffce00;
+    color: #0d0c3b;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .3s;
+}
+
+a.template-link:hover {
+    background: #ffd633;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.home-btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 8px 20px;
+    border: 2px solid #ffce00;
+    border-radius: 30px;
+    transition: .3s ease;
+}
+
+.home-btn:hover { background: #ffce00; color: #0d0c3b; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* STATUS (dari status.html) */
+.status {
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-block;
+    transition: all .3s ease;
+}
+
+.pending { background: #ffd633; color: #0d0c3b; }
+.approved { background: #00c853; color: #fff; }
+.rejected { background: #d50000; color: #fff; }
+
+.btn-progress {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ffce00;
+    color: #0d0c3b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.btn-progress:hover {
+    background: #ffd633;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* MODAL (dari status.html) */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+    z-index: 10;
+}
+
+.modal.active { opacity: 1; pointer-events: auto; }
+
+.modal-content {
+    background: #fff;
+    color: #0d0c3b;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    transform: translateY(-30px);
+    opacity: 0;
+    transition: all .4s ease;
+}
+
+.modal.active .modal-content { transform: translateY(0); opacity: 1; }
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.progress-bar { display: flex; justify-content: space-between; margin-top: 20px; }
+.step { flex: 1; text-align: center; position: relative; transition: all .4s ease; }
+
+.step::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #ccc;
+    z-index: -1;
+}
+
+.step:first-child::before { left: 50%; width: 50%; }
+.step:last-child::before { width: 50%; }
+
+.circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ccc;
+    margin: 0 auto 8px;
+    line-height: 30px;
+    color: #fff;
+    font-weight: bold;
+    transition: all .4s ease;
+}
+
+.completed { background: #00c853; }
+.warning { background: #ffd633; color: #0d0c3b; }
+.error { background: #d50000; }
+
+/* LOGIN (dari loginpage.html) */
+.login-container {
+    position: relative;
+    width: 450px;
+    background: #fff;
+    padding: 50px 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+    text-align: center;
+    z-index: 2;
+    animation: slideUp 1.5s ease forwards;
+    animation-delay: 0.5s; /* Disesuaikan */
+}
+
+@keyframes slideUp {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.login-container h1 { font-size: 36px; font-weight: 900; margin-bottom: 15px; color: #0d0c3b; }
+.login-container p { font-size: 16px; margin-bottom: 30px; color: #555; }
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #0d0c3b; }
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #ffce00;
+    box-shadow: 0 0 0 3px rgba(255, 206, 0, 0.3);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #0d0c3b;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* PENGAJUAN (dari pengajuan.html) */
+.form-box {
+    background: #fff;
+    color: #333;
+    width: 100%;
+    max-width: 650px;
+    padding: 40px 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .35);
+    animation: fadeUp .8s ease;
+}
+
+.form-box h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #0d0c3b;
+    text-align: center;
+}
+
+label { display: block; margin-bottom: 8px; font-weight: 500; }
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: .3s;
+}
+
+input:focus, select:focus {
+    border-color: #ffce00;
+    outline: none;
+    box-shadow: 0 0 8px rgba(255, 206, 0, .6);
+}
+
+.btn {
+    background: #0d0c3b;
+    color: #fff;
+    border: none;
+    padding: 12px 26px;
+    font-size: 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: 600;
+}
+
+.btn:hover {
+    background: #ffce00;
+    color: #0d0c3b;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.btn-row { display: flex; justify-content: space-between; gap: 15px; }
+.step { display: none; }
+.step.active { display: block; }
+
+.success { text-align: center; padding: 40px 20px; }
+.success h3 { color: #0d0c3b; margin-bottom: 20px; }
+.success .checkmark {
+    font-size: 70px;
+    color: green;
+    margin-bottom: 20px;
+    animation: pop .5s ease;
+}
+
+@keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* === CSS KHUSUS UNTUK PROGRESS TRACKER (VERSI HANYA KUNING) === */
+.progress-tracker {
+    display: flex;
+    width: 100%;
+    padding: 20px 0;
+    justify-content: space-between;
+}
+
+.tracker-step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    width: 150px;
+}
+
+.tracker-step::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    width: 100%;
+    height: 4px;
+    background-color: #2a2970; /* Garis dasar abu-abu gelap */
+    z-index: -1;
+    transition: background-color 0.4s ease;
+}
+
+.tracker-step:last-child::after {
+    display: none;
+}
+
+.tracker-step .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #2a2970; /* Bulatan dasar abu-abu gelap */
+    border: 3px solid #1a1859;
+    color: #fff;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 0 auto 10px;
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.tracker-step .label {
+    font-size: 14px;
+    color: #ccc;
+    transition: color 0.4s ease;
+}
+
+/* Styling untuk SEMUA langkah yang sudah dilewati & sedang aktif */
+.tracker-step.active-path .circle {
+    background-color: #ffce00; /* Bulatan menjadi kuning */
+    color: #0d0c3b;
+}
+.tracker-step.active-path .label {
+    color: #ffce00;
+    font-weight: 600;
+}
+.tracker-step.active-path::after {
+    background-color: #ffce00; /* Garis setelah langkah yang dilewati menjadi kuning */
+}
+
+/* Garis SETELAH langkah yang aktif saat ini kembali menjadi abu-abu */
+.tracker-step.current::after {
+    background-color: #2a2970;
+}
+
+/* Styling tambahan untuk langkah yang PALING AKTIF saat ini */
+.tracker-step.current .circle {
+    transform: scale(1.2);
+    border-color: #fff;
+}
+
+/* Styling untuk status DITOLAK */
+.tracker-rejection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 25px;
+    width: 100%;
+}
+.tracker-rejection .circle {
+    background-color: #d50000;
+}
+.tracker-rejection .label {
+    color: #ffb8b8;
+    font-weight: 600;
+}
+.no-line::after,
+.no-line::before {
+    display: none !important;
+}
+
+/* === CSS KHUSUS UNTUK POP-UP ANTI-GAGAL === */
+
+/* Checkbox tersembunyi yang akan jadi pemicu */
+.modal-toggle {
+    display: none;
+}
+
+/* Overlay gelap di latar belakang */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Konten pop-up */
+.modal-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 101;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+/* Logika utama: Saat checkbox di-klik, tampilkan overlay dan box */
+.modal-toggle:checked ~ .modal-overlay,
+.modal-toggle:checked ~ .modal-box {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-toggle:checked ~ .modal-box {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Utility class untuk menghilangkan garis pada tracker-step */
+.no-line::after,
+.no-line::before {
+    display: none !important;
+}
+
+/* Styling tambahan untuk status FINAL DISETUJUI */
+.approved-step .circle {
+    background-color: #00c853 !important; /* Paksa warna jadi hijau */
+    color: #fff !important; /* Paksa warna checkmark jadi putih */
+    border-color: #0d0c3b !important;
+}
+.approved-step .label {
+    color: #00c853 !important; /* Paksa warna teks jadi hijau */
+}
