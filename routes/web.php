@@ -29,7 +29,6 @@ Route::middleware('auth:mahasiswa')->group(function() {
 Route::middleware('auth:web')->group(function() {
     // TAMBAHKAN ROUTE INI untuk halaman dashboard admin
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-
     Route::get('/surat-masuk', [ApprovalController::class, 'index'])->name('surat.masuk');
     Route::get('/surat/{surat}/periksa', [ApprovalController::class, 'show'])->name('surat.periksa');
     Route::post('/surat/{surat}/approve', [ApprovalController::class, 'approve'])->name('surat.approve');
