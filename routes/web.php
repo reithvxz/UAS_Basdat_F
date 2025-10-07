@@ -1,11 +1,12 @@
 <?php
+// Rute Kelompok Okan
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\TemplateController;
-use App\Http\Controllers\AdminDashboardController; // TAMBAHKAN INI
+use App\Http\Controllers\AdminDashboardController;
 use App\Models\Mahasiswa;
 
 Route::get('/', function () {
