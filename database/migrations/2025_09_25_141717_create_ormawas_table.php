@@ -7,7 +7,7 @@ return new class extends Migration {
         Schema::create('ormawas', function (Blueprint $table) {
             $table->id('ormawa_id');
             $table->string('nama_ormawa');
-            $table->enum('tipe', ['HIMA', 'BSO', 'BEM']);
+            $table->enum('tipe', ['HIMA', 'BSO', 'BEM', 'BLM']);
             $table->timestamps();
         });
     }

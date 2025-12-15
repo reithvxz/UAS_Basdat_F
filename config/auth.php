@@ -68,9 +68,9 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'mahasiswas' => [ // TAMBAHKAN INI
+        'mahasiswas' => [ // Pastikan nama ini 'mahasiswas' (jamak) agar konsisten dengan guard
             'driver' => 'eloquent',
-            'model' => App\Models\Mahasiswa::class,
+            'model' => App\Models\Mahasiswa::class, // Pastikan Model ada
         ],
     ],
     [

@@ -447,6 +447,7 @@ a.template-link:hover {
 .pending { background: #ffd633; color: #0d0c3b; }
 .approved { background: #00c853; color: #fff; }
 .rejected { background: #d50000; color: #fff; }
+.cancelled { background: #6c757d; color: #fff; } /* Dibatalkan */
 
 .btn-progress {
     padding: 6px 12px;

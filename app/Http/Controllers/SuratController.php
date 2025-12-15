@@ -1,28 +1,62 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage; // Pastikan ini ada untuk hapus file
+use Illuminate\Support\Facades\Storage;
 use App\Models\Surat;
 use App\Models\JenisSurat;
 use App\Models\Ormawa;
 use App\Models\Lampiran;
+use App\Models\Approval;
 
 class SuratController extends Controller
 {
-    // Menampilkan daftar status surat mahasiswa
-    public function index()
+    // =========================================================================
+    // 1. INDEX (FILTER STATUS DENGAN DIBATALKAN)
+    // =========================================================================
+    public function index(Request $request)
     {
         $mhs_id = Auth::guard('mahasiswa')->id();
-        $surats = Surat::with('jenisSurat', 'lampiran')
-                        ->where('mhs_id', $mhs_id)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-        return view('mahasiswa.status', compact('surats'));
+
+        // 1. SETUP DEFAULT FILTER: "Proses"
+        $defaultFilter = 'Proses';
+        $filterStatus = $request->input('filter_status', $defaultFilter);
+
+        // 2. QUERY DASAR
+        $query = Surat::with('jenisSurat', 'lampiran')
+                        ->where('mhs_id', $mhs_id);
+
+        // 3. LOGIKA FILTER
+        if ($filterStatus == 'Proses') {
+            // Tampilkan yang sedang berjalan (Menunggu... atau Kembali ke...)
+            $query->whereNotIn('status', ['Selesai', 'Ditolak', 'Dibatalkan']);
+            
+        } elseif ($filterStatus == 'Disetujui') {
+            $query->where('status', 'Selesai');
+            
+        } elseif ($filterStatus == 'Ditolak') {
+            $query->where('status', 'Ditolak');
+            
+        } elseif ($filterStatus == 'Dibatalkan') {
+            // FITUR BARU: Filter khusus untuk surat yang dibatalkan
+            $query->where('status', 'Dibatalkan');
+
+        } elseif ($filterStatus == 'Semua') {
+            // Tampilkan semua data tanpa filter status
+        }
+
+        // 4. URUTKAN & PAGINATE
+        $surats = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        // Kirim variabel filterStatus agar view tahu tab mana yang aktif
+        return view('mahasiswa.status', compact('surats', 'filterStatus'));
     }
 
-    // Menampilkan form pengajuan
+    // =========================================================================
+    // 2. CREATE (TIDAK BERUBAH)
+    // =========================================================================
     public function create()
     {
         $jenisSurats = JenisSurat::all();
@@ -31,9 +65,12 @@ class SuratController extends Controller
         return view('mahasiswa.pengajuan', compact('jenisSurats', 'himas', 'bsos'));
     }
 
-    // Memproses form pengajuan
+    // =========================================================================
+    // 3. STORE (TIDAK BERUBAH)
+    // =========================================================================
     public function store(Request $request)
     {
+        // Validasi awal
         $request->validate([
             'nama_pengaju' => 'required|string|max:255',
             'atas_nama' => 'required|string',
@@ -44,29 +81,40 @@ class SuratController extends Controller
             'lampiran' => 'required|file|mimes:pdf|max:2048',
         ]);
 
+        // Validasi tambahan untuk Surat Rekomendasi
+        $jenisIdRekomendasi = 3; 
+        if ($request->atas_nama != 'Mahasiswa' && $request->jenis_id == $jenisIdRekomendasi) {
+            return back()->withErrors(['jenis_id' => 'Surat Rekomendasi hanya dapat diajukan atas nama Mahasiswa (Pribadi).'])
+                         ->withInput();
+        }
+
         $mhs_id = Auth::guard('mahasiswa')->id();
         $ormawa_id = null;
+        $atas_nama_input = $request->atas_nama;
 
-        if ($request->atas_nama == 'HIMA' || $request->atas_nama == 'BSO' || $request->atas_nama == 'BEM') {
-            if($request->atas_nama == 'BEM') {
-                $bem = Ormawa::where('tipe', 'BEM')->first();
-                $ormawa_id = $bem ? $bem->ormawa_id : null;
-            } else {
+        // Tentukan ormawa_id
+        if (in_array($atas_nama_input, ['HIMA', 'BSO', 'BEM', 'BLM'])) {
+            if ($atas_nama_input == 'BEM') {
+                $ormawa = Ormawa::where('tipe', 'BEM')->first();
+                $ormawa_id = $ormawa ? $ormawa->ormawa_id : null;
+            } elseif ($atas_nama_input == 'BLM'){ 
+                 $ormawa = Ormawa::where('tipe', 'BLM')->first();
+                 $ormawa_id = $ormawa ? $ormawa->ormawa_id : null;
+            } else { 
                 $ormawa_id = $request->ormawa_id;
             }
         }
-        
-        // --- PERBAIKAN LOGIKA ADA DI SINI ---
-        // Tentukan status awal berdasarkan 'atas_nama'
-        $status = 'Menunggu BEM'; // Status default untuk Mahasiswa, HIMA, BSO
-        if ($request->atas_nama == 'BEM') {
-            $status = 'Menunggu Akademik'; // Jika atas nama BEM, langsung ke Akademik
+
+        // Tentukan status awal
+        $status = 'Menunggu BEM';
+        if ($atas_nama_input == 'BEM' || $atas_nama_input == 'BLM') { 
+            $status = 'Menunggu Akademik'; 
         }
 
         $surat = Surat::create([
             'mhs_id' => $mhs_id,
             'nama_pengaju' => $request->nama_pengaju,
-            'atas_nama' => $request->atas_nama,
+            'atas_nama' => $atas_nama_input,
             'ormawa_id' => $ormawa_id,
             'jenis_surat_id' => $request->jenis_id,
             'tipe_surat' => $request->tipe_surat,
@@ -89,7 +137,9 @@ class SuratController extends Controller
         return redirect()->route('status')->with('success', 'Surat berhasil diajukan!');
     }
 
-    // Menghapus/membatalkan surat
+    // =========================================================================
+    // 4. DESTROY (TIDAK BERUBAH)
+    // =========================================================================
     public function destroy(Surat $surat)
     {
         $mhs_id = Auth::guard('mahasiswa')->id();
@@ -98,31 +148,39 @@ class SuratController extends Controller
             return redirect()->route('status')->with('error', 'Anda tidak berhak membatalkan surat ini.');
         }
 
-        $surat->approvals()->delete();
+        $surat->status = 'Dibatalkan';
+        $surat->save();
         
-        if ($surat->lampiran) {
-            Storage::disk('public')->delete($surat->lampiran->file_path);
-            $surat->lampiran->delete();
-        }
-
-        $surat->delete();
-
         return redirect()->route('status')->with('success', 'Pengajuan surat berhasil dibatalkan.');
     }
 
-    // Menampilkan tracking surat dengan logika yang lebih detail
+    // =========================================================================
+    // 5. TRACKING (TIDAK BERUBAH)
+    // =========================================================================
     public function tracking(Surat $surat)
     {
-        // Definisikan semua kemungkinan status dalam alur proses
-        $alur = ['Menunggu BEM', 'Menunggu Akademik', 'Menunggu Sekretariat', 'Menunggu Dekan'];
-    
-        // Cari di langkah keberapa surat ini sekarang (hasilnya berupa angka, misal: 0, 1, 2, dst.)
-        $activeIndex = array_search($surat->status, $alur);
-
-        // Dapatkan data penolakan jika ada
         $rejection = $surat->status == 'Ditolak' ? $surat->approvals->where('status', 'Rejected')->first() : null;
 
-        // Kirim data surat, alur, posisi saat ini, dan data penolakan ke view
-        return view('mahasiswa.tracking', compact('surat', 'alur', 'activeIndex', 'rejection'));
+        if ($surat->status == 'Dibatalkan') {
+            return view('mahasiswa.tracking', compact('surat', 'rejection'))
+                ->with(['isCanceled' => true]);
+        }
+        
+        $alurVisual = [
+            'Menunggu BEM', 
+            'Menunggu Akademik', 
+            'Menunggu Sekretariat', 
+            'Menunggu Dekan', 
+            'Menunggu Wakil Dekan', 
+            'Kembali ke Sekretariat', 
+            'Kembali ke Akademik', 
+            'Kembali ke BEM',
+            'Selesai'
+        ];
+    
+        $activeIndex = array_search($surat->status, $alurVisual);
+
+        return view('mahasiswa.tracking', compact('surat', 'alurVisual', 'activeIndex', 'rejection'))
+               ->with(['isCanceled' => false]);
     }
 }

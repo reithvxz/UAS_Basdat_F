@@ -14,7 +14,7 @@ class UsersSeeder extends Seeder
             ['user_id' => 2, 'username' => 'akd01', 'nama' => 'Staf Akademik', 'role' => 'Akademik', 'password' => '12345'],
             ['user_id' => 3, 'username' => 'sek01', 'nama' => 'Sekretariat Dekanat', 'role' => 'Sekretariat', 'password' => '12345'],
             ['user_id' => 4, 'username' => 'dek01', 'nama' => 'Dekan', 'role' => 'Dekan', 'password' => '12345'],
-            ['user_id' => 5, 'username' => 'dek02', 'nama' => 'Wakil Dekan I', 'role' => 'Dekan', 'password' => '12345'],
+            ['user_id' => 5, 'username' => 'dek02', 'nama' => 'Wakil Dekan I', 'role' => 'Wakil Dekan', 'password' => '12345'],
         ]);
     }
 }

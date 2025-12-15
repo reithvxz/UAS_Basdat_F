@@ -6,15 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id('user_id');
-            $table->string('nama');
-            $table->string('username')->unique();
+            $table->id('user_id'); // PENTING: user_id
+            $table->string('nama'); // PENTING: nama (bukan name)
+            $table->string('username')->unique(); // PENTING: username (bukan email)
             $table->string('password');
             $table->string('role');
             $table->rememberToken();
@@ -22,9 +19,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
