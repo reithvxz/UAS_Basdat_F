@@ -1,61 +1,130 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+==================================================================================
+IDENTITAS KELOMPOK
+==================================================================================
+Nomor Kelompok  : Kelompok F
+Judul Project   : Pengembangan Sistem Manajemen Persuratan (SIMAS-FTMM) & Dashboard Analisis Data (OLAP)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Anggota Kelompok:
+1. [RATU APHRODITE CINTA AURORA]     - [164231009]
+2. [ARIO RIZKY MUHAMMAD]             - [164231080]
+3. [OKAN ATHALLAH MAREDITH]          - [164231088]
+4. [BUNGA AMANDA AURORA]             - [164231098]
+5. [ATHALIA ANDRIA LOLY ARUAN]       - [164231110]
 
-## About Laravel
+==================================================================================
+DESKRIPSI SINGKAT PROJECT
+==================================================================================
+Project ini bertujuan untuk mendigitalkan proses pengajuan surat kemahasiswaan di 
+lingkungan FTMM Universitas Airlangga. Sistem ini mengintegrasikan dua modul utama:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. Modul Operasional (Laravel): Memungkinkan mahasiswa mengajukan surat dan pihak 
+   terkait (BEM, Admin, Dekanat) melakukan approval/tracking secara real-time.
+2. Modul Analisis (Pentaho & Dashboard): Menggunakan proses ETL untuk membentuk 
+   Data Warehouse yang divisualisasikan menjadi grafik tren dan performa layanan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+==================================================================================
+STRUKTUR FILE (DALAM ZIP)
+==================================================================================
+1. Folder "Laporan"
+   - Berisi dokumen Laporan Akhir Project (PDF).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. Folder "Codingan Laravel"
+   - Source code aplikasi web (Controller, Model, View, dll).
+   - Siap dijalankan menggunakan local server (Artisan).
 
-## Learning Laravel
+3. Folder "Data Pentaho"
+   - Database Master (.sql): File dump database `persuratan.sql`.
+   - ETL Files (.ktr): 6 File transformasi Pentaho untuk mengisi Data Warehouse.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+==================================================================================
+SPESIFIKASI TEKNOLOGI
+==================================================================================
+- Backend Framework : Laravel (PHP 8.x)
+- Database          : MySQL
+- ETL Tool          : Pentaho Data Integration (Spoon)
+- Frontend          : Blade, Bootstrap, Custom CSS
+- Visualisasi Data  : Chart.js
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+==================================================================================
+TATA CARA PENGGUNAAN (HOW TO RUN)
+==================================================================================
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+[LANGKAH 1: SETUP DATABASE]
+1. Buka phpMyAdmin atau SQL Client.
+2. Buat database baru dengan nama: persuratan
+3. Buka folder "Data Pentaho", lalu import file `persuratan.sql` ke database tersebut.
 
-## Laravel Sponsors
+[LANGKAH 2: SETUP APLIKASI LARAVEL]
+1. Buka terminal/CMD, arahkan ke direktori folder "Codingan Laravel".
+2. Install dependensi (jika folder /vendor belum ada):
+   > composer install
+3. Salin file environment:
+   > cp .env.example .env
+4. Buka file `.env`, pastikan konfigurasi database sesuai:
+   DB_DATABASE=persuratan
+   DB_USERNAME=root
+   DB_PASSWORD=  (kosongkan jika default, atau sesuaikan dengan password local Anda)
+5. Generate Application Key:
+   > php artisan key:generate
+6. Jalankan server:
+   > php artisan serve
+7. Aplikasi dapat diakses di: http://127.0.0.1:8000
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+[LANGKAH 3: MENJALANKAN PROSES ETL (PENTAHO)]
+*Penting: Jalankan file transformasi secara berurutan agar relasi data terbentuk benar.*
 
-### Premium Partners
+Buka aplikasi Pentaho Data Integration (Spoon), lalu buka dan jalankan file yang ada 
+di folder "Data Pentaho" dengan urutan sebagai berikut:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. Load Dimensi (Master Data):
+   - Run `01_dim_mahasiswa.ktr`
+   - Run `02_dim_waktu.ktr`
+   - Run `03_dims_lain.ktr`
 
-## Contributing
+2. Load Fakta (Transaksi):
+   - Run `04_fact_pengajuan.ktr`
+   - Run `05_fact_durasi.ktr`
+   - Run `06_fact_approval.ktr`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+*Catatan: Pastikan koneksi database di Pentaho ("koneksi_laravel") sudah disesuaikan 
+dengan settingan MySQL lokal Anda (Username/Password).*
 
-## Code of Conduct
+==================================================================================
+AKUN LOGIN (CREDENTIALS)
+==================================================================================
+Gunakan akun berikut untuk menguji fitur sistem:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+A. ROLE MAHASISWA (Pengaju Surat)
+   - Username : 164231088
+   - Password : okan
 
-## Security Vulnerabilities
+B. ROLE ADMIN / APPROVER (Dashboard & Approval)
+   Password untuk semua akun di bawah ini adalah: 12345
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   1. BEM           : bem01
+   2. Akademik      : akd01
+   3. Sekretariat   : sek01
+   4. Dekan         : dek01
+   5. Wakil Dekan   : dek02
 
-## License
+==================================================================================
+FITUR UNGGULAN
+==================================================================================
+1. Tracking Status Real-time
+   Mahasiswa dapat memantau posisi surat secara langsung (Pending/Approved/Rejected)
+   di setiap tahap birokrasi.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. Dashboard Analisis Eksekutif
+   Admin memiliki akses ke dashboard visual yang menyajikan:
+   - Tren Surat Masuk (Line Chart)
+   - Total per Jenis Surat (Bar Chart)
+   - Rasio Approval (Pie Chart)
+   - Rata-rata Durasi Layanan (Horizontal Bar)
+
+3. Integrasi Data Warehouse (ETL)
+   Sistem tidak membebani database operasional saat melakukan analisis berat, 
+   karena menggunakan skema OLAP (Star Schema) yang diproses via Pentaho.
+
+4. Notifikasi Urgency (Early Warning System)
+   Sistem memberikan tanda visual (highlight merah/kuning) pada tabel admin 
+   jika ada surat yang mandek/belum diproses lebih dari 3 atau 7 hari.
