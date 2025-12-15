@@ -4,9 +4,13 @@
 @section('navbar')
     <nav>
         <div class="logo">SIMAS-FTMM</div>
-        <form method="POST" action="{{ route('logout') }}">
+        
+        {{-- TOMBOL LOGOUT (STYLE DISAMAKAN DENGAN ADMIN) --}}
+        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
             @csrf
-            <a href="{{ route('logout') }}" class="logout" onclick="event.preventDefault(); this.closest('form').submit();">
+            <a href="{{ route('logout') }}" class="logout" 
+               onclick="event.preventDefault(); this.closest('form').submit();"
+               style="color: white; text-decoration: none; font-weight: 600; padding: 8px 15px; border: 1px solid white; border-radius: 5px; cursor: pointer;">
                 Logout
             </a>
         </form>

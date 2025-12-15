@@ -23,6 +23,7 @@ class OrmawaSeeder extends Seeder
             ['ormawa_id' => 11, 'tipe' => 'BSO', 'nama_ormawa' => 'Rasena'],
             ['ormawa_id' => 12, 'tipe' => 'BSO', 'nama_ormawa' => 'Kombo'],
             ['ormawa_id' => 13, 'tipe' => 'BEM', 'nama_ormawa' => 'BEM FTMM'],
+            ['ormawa_id' => 14, 'tipe' => 'BLM', 'nama_ormawa' => 'BLM FTMM']
         ]);
     }
 }
