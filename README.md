@@ -1,130 +1,60 @@
-==================================================================================
-IDENTITAS KELOMPOK
-==================================================================================
-Nomor Kelompok  : Kelompok F
-Judul Project   : Pengembangan Sistem Manajemen Persuratan (SIMAS-FTMM) & Dashboard Analisis Data (OLAP)
+# 📨 SIMAS-FTMM: Integrated Mail Management & Data Warehouse
 
-Anggota Kelompok:
-1. [RATU APHRODITE CINTA AURORA]     - [164231009]
-2. [ARIO RIZKY MUHAMMAD]             - [164231080]
-3. [OKAN ATHALLAH MAREDITH]          - [164231088]
-4. [BUNGA AMANDA AURORA]             - [164231098]
-5. [ATHALIA ANDRIA LOLY ARUAN]       - [164231110]
+[![Laravel](https://img.shields.io/badge/Framework-Laravel-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com/)
+[![Pentaho](https://img.shields.io/badge/ETL-Pentaho-0E599F?style=flat-square&logo=hitachi&logoColor=white)](https://www.hitachi-solutions.com/)
+[![MySQL](https://img.shields.io/badge/Database-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-==================================================================================
-DESKRIPSI SINGKAT PROJECT
-==================================================================================
-Project ini bertujuan untuk mendigitalkan proses pengajuan surat kemahasiswaan di 
-lingkungan FTMM Universitas Airlangga. Sistem ini mengintegrasikan dua modul utama:
+**SIMAS-FTMM** (Sistem Manajemen Persuratan FTMM) adalah proyek integrasi sistem operasional dan analitik yang dirancang untuk mendigitalkan birokrasi pengajuan surat kemahasiswaan di lingkungan FTMM Universitas Airlangga. Proyek ini merupakan tugas akhir kelompok untuk mata kuliah **Basis Data**.
 
-1. Modul Operasional (Laravel): Memungkinkan mahasiswa mengajukan surat dan pihak 
-   terkait (BEM, Admin, Dekanat) melakukan approval/tracking secara real-time.
-2. Modul Analisis (Pentaho & Dashboard): Menggunakan proses ETL untuk membentuk 
-   Data Warehouse yang divisualisasikan menjadi grafik tren dan performa layanan.
+## 👥 Kelompok F - Kontributor
+Proyek ini dikembangkan secara kolaboratif oleh:
+- **Okan Athallah Maredith** (164231088)
+- **Ratu Aphrodite Cinta Aurora** (164231009)
+- **Ario Rizky Muhammad** (164231080)
+- **Bunga Amanda Aurora** (164231098)
+- **Athalia Andria Loly Aruan** (164231110)
 
-==================================================================================
-STRUKTUR FILE (DALAM ZIP)
-==================================================================================
-1. Folder "Laporan"
-   - Berisi dokumen Laporan Akhir Project (PDF).
+## 🏗️ Arsitektur Sistem
+Sistem ini menggunakan pendekatan hibrida antara pengolahan transaksi (OLTP) dan pengolahan analitik (OLAP):
+1. **Modul Operasional (Laravel):** Menangani workflow persuratan secara real-time mulai dari pengajuan mahasiswa hingga approval Dekanat.
+2. **Modul Analitik (Pentaho PDI):** Menjalankan proses ETL (Extract, Transform, Load) untuk memindahkan data operasional ke dalam Data Warehouse dengan Star Schema.
+3. **Executive Dashboard:** Visualisasi tren data, performa layanan, dan durasi approval menggunakan Chart.js.
 
-2. Folder "Codingan Laravel"
-   - Source code aplikasi web (Controller, Model, View, dll).
-   - Siap dijalankan menggunakan local server (Artisan).
+## 🛠️ Spesifikasi Teknologi
+- **Backend:** PHP 8.x (Laravel Framework)
+- **Database:** MySQL (OLTP & OLAP Schema)
+- **ETL Tool:** Pentaho Data Integration (Spoon)
+- **Frontend:** Blade Templating, Bootstrap, Custom CSS
+- **Analytics:** Chart.js (Real-time tracking & Reporting)
 
-3. Folder "Data Pentaho"
-   - Database Master (.sql): File dump database `persuratan.sql`.
-   - ETL Files (.ktr): 6 File transformasi Pentaho untuk mengisi Data Warehouse.
+## 📂 Struktur Repositori
+- **Laporan/**: Dokumentasi teknis dan laporan akhir proyek (PDF).
+- **Codingan_Laravel/**: Source code aplikasi web operasional.
+- **Data_Pentaho/**: File transformasi ETL (.ktr) dan database dump (.sql).
 
-==================================================================================
-SPESIFIKASI TEKNOLOGI
-==================================================================================
-- Backend Framework : Laravel (PHP 8.x)
-- Database          : MySQL
-- ETL Tool          : Pentaho Data Integration (Spoon)
-- Frontend          : Blade, Bootstrap, Custom CSS
-- Visualisasi Data  : Chart.js
+## ⚙️ Panduan Instalasi (How to Run)
 
-==================================================================================
-TATA CARA PENGGUNAAN (HOW TO RUN)
-==================================================================================
+### 1. Database Setup
+- Buat database baru bernama: **persuratan**
+- Import file **persuratan.sql** yang berada di folder Data_Pentaho.
 
-[LANGKAH 1: SETUP DATABASE]
-1. Buka phpMyAdmin atau SQL Client.
-2. Buat database baru dengan nama: persuratan
-3. Buka folder "Data Pentaho", lalu import file `persuratan.sql` ke database tersebut.
+### 2. Laravel Configuration
+Jalankan perintah berikut di terminal folder Codingan_Laravel:
+- composer install
+- cp .env.example .env
+- php artisan key:generate
+- php artisan serve
+(Pastikan konfigurasi .env untuk database sudah sesuai dengan MySQL lokal Anda).
 
-[LANGKAH 2: SETUP APLIKASI LARAVEL]
-1. Buka terminal/CMD, arahkan ke direktori folder "Codingan Laravel".
-2. Install dependensi (jika folder /vendor belum ada):
-   > composer install
-3. Salin file environment:
-   > cp .env.example .env
-4. Buka file `.env`, pastikan konfigurasi database sesuai:
-   DB_DATABASE=persuratan
-   DB_USERNAME=root
-   DB_PASSWORD=  (kosongkan jika default, atau sesuaikan dengan password local Anda)
-5. Generate Application Key:
-   > php artisan key:generate
-6. Jalankan server:
-   > php artisan serve
-7. Aplikasi dapat diakses di: http://127.0.0.1:8000
+### 3. ETL Process (Pentaho)
+Buka Pentaho Spoon, lalu jalankan file .ktr di folder Data_Pentaho dengan urutan:
+1. **Dimensi:** 01_dim_mahasiswa, 02_dim_waktu, 03_dims_lain.
+2. **Fakta:** 04_fact_pengajuan, 05_fact_durasi, 06_fact_approval.
 
-[LANGKAH 3: MENJALANKAN PROSES ETL (PENTAHO)]
-*Penting: Jalankan file transformasi secara berurutan agar relasi data terbentuk benar.*
+## 🔑 Akses Uji Coba
+- **Mahasiswa:** User: 164231088 | Pass: okan
+- **Admin/Approver:** User: bem01 / akd01 / dek01 | Pass: 12345
 
-Buka aplikasi Pentaho Data Integration (Spoon), lalu buka dan jalankan file yang ada 
-di folder "Data Pentaho" dengan urutan sebagai berikut:
-
-1. Load Dimensi (Master Data):
-   - Run `01_dim_mahasiswa.ktr`
-   - Run `02_dim_waktu.ktr`
-   - Run `03_dims_lain.ktr`
-
-2. Load Fakta (Transaksi):
-   - Run `04_fact_pengajuan.ktr`
-   - Run `05_fact_durasi.ktr`
-   - Run `06_fact_approval.ktr`
-
-*Catatan: Pastikan koneksi database di Pentaho ("koneksi_laravel") sudah disesuaikan 
-dengan settingan MySQL lokal Anda (Username/Password).*
-
-==================================================================================
-AKUN LOGIN (CREDENTIALS)
-==================================================================================
-Gunakan akun berikut untuk menguji fitur sistem:
-
-A. ROLE MAHASISWA (Pengaju Surat)
-   - Username : 164231088
-   - Password : okan
-
-B. ROLE ADMIN / APPROVER (Dashboard & Approval)
-   Password untuk semua akun di bawah ini adalah: 12345
-
-   1. BEM           : bem01
-   2. Akademik      : akd01
-   3. Sekretariat   : sek01
-   4. Dekan         : dek01
-   5. Wakil Dekan   : dek02
-
-==================================================================================
-FITUR UNGGULAN
-==================================================================================
-1. Tracking Status Real-time
-   Mahasiswa dapat memantau posisi surat secara langsung (Pending/Approved/Rejected)
-   di setiap tahap birokrasi.
-
-2. Dashboard Analisis Eksekutif
-   Admin memiliki akses ke dashboard visual yang menyajikan:
-   - Tren Surat Masuk (Line Chart)
-   - Total per Jenis Surat (Bar Chart)
-   - Rasio Approval (Pie Chart)
-   - Rata-rata Durasi Layanan (Horizontal Bar)
-
-3. Integrasi Data Warehouse (ETL)
-   Sistem tidak membebani database operasional saat melakukan analisis berat, 
-   karena menggunakan skema OLAP (Star Schema) yang diproses via Pentaho.
-
-4. Notifikasi Urgency (Early Warning System)
-   Sistem memberikan tanda visual (highlight merah/kuning) pada tabel admin 
-   jika ada surat yang mandek/belum diproses lebih dari 3 atau 7 hari.
+---
+Kelompok F Basis Data Teknologi Sains Data FTMM UNAIR.
+Proyek ini mensimulasikan alur birokrasi nyata dengan fitur Early Warning System untuk efisiensi layanan publik.
